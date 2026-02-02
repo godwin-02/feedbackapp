@@ -16,7 +16,9 @@ const Login = () => {
     const endpoint = mode === 'login' ? '/api/users/login' : '/api/users/register';
     
     try {
-      const res = await axios.post(`http://localhost:5000${endpoint}`, form);
+      // FIX: http://localhost:5000 ah remove panniyaachu. 
+      // Ippo it uses relative path, which works on both local and Vercel.
+      const res = await axios.post(endpoint, form); 
       
       localStorage.setItem("user", JSON.stringify(res.data));
       localStorage.setItem("userName", res.data.name);
@@ -50,13 +52,13 @@ const Login = () => {
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center', 
-      minHeight: '80vh', // Centers the form vertically on the screen
-      px: 2 // Adds side padding on very small screens
+      minHeight: '80vh', 
+      px: 2 
     }}>
       <Paper 
         elevation={4} 
         sx={{ 
-          p: { xs: 3, sm: 4 }, // Smaller padding on mobile, larger on desktop
+          p: { xs: 3, sm: 4 }, 
           width: '100%', 
           maxWidth: 400, 
           borderRadius: 3,
@@ -117,7 +119,7 @@ const Login = () => {
               type="submit" 
               sx={{ 
                 mt: 1, 
-                py: 1.5, // Thicker button for easier tapping on mobile
+                py: 1.5, 
                 fontWeight: 'bold' 
               }}
             >
