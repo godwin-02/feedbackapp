@@ -13,12 +13,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Vercel rewrites use panradhu nala, relative path (/api/...) pothum
     const endpoint = mode === 'login' ? '/api/users/login' : '/api/users/register';
     
     try {
-      // FIX: Localhost URL-ah remove panniyaachu. Ippo idhu live-la correct-ah backend-ah reach pannum.
-      const res = await axios.post(endpoint, form); 
+      // Explicitly pointing to 5000 for Feedback App
+      const res = await axios.post(`http://localhost:5000${endpoint}`, form);
+      
+      // Clear any old E-commerce data to prevent collisions
+      localStorage.removeItem("userInfo"); 
       
       localStorage.setItem("user", JSON.stringify(res.data));
       localStorage.setItem("userName", res.data.name);
@@ -39,39 +41,19 @@ const Login = () => {
       }, 1500);
 
     } catch (err) {
-      console.error("Login Error:", err);
       setNotify({ 
         open: true, 
-        msg: "Authentication failed. Check your credentials.", 
+        msg: err.response?.data?.message || "Authentication failed. Check your credentials.", 
         type: 'error' 
       });
     }
   };
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      minHeight: '80vh', 
-      px: 2 
-    }}>
-      <Paper 
-        elevation={4} 
-        sx={{ 
-          p: { xs: 3, sm: 4 }, 
-          width: '100%', 
-          maxWidth: 400, 
-          borderRadius: 3,
-          mt: { xs: 2, sm: 0 } 
-        }}
-      >
-        <Typography 
-          variant="h5" 
-          align="center" 
-          sx={{ mb: 3, fontWeight: 'bold', fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
-        >
-          {mode === 'login' ? 'Sign In' : 'Create Account'}
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', px: 2 }}>
+      <Paper elevation={4} sx={{ p: { xs: 3, sm: 4 }, width: '100%', maxWidth: 400, borderRadius: 3 }}>
+        <Typography variant="h5" align="center" sx={{ mb: 3, fontWeight: 'bold' }}>
+          {mode === 'login' ? 'Feedback Sign In' : 'Join Feedback App'}
         </Typography>
 
         <ToggleButtonGroup
@@ -113,17 +95,7 @@ const Login = () => {
               value={form.password}
               onChange={(e) => setForm({...form, password: e.target.value})} 
             />
-            <Button 
-              variant="contained" 
-              fullWidth 
-              size="large" 
-              type="submit" 
-              sx={{ 
-                mt: 1, 
-                py: 1.5, 
-                fontWeight: 'bold' 
-              }}
-            >
+            <Button variant="contained" fullWidth size="large" type="submit" sx={{ mt: 1, py: 1.5, fontWeight: 'bold' }}>
               {mode === 'login' ? 'Sign In' : 'Create Account'}
             </Button>
           </Stack>
