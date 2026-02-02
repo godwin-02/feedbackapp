@@ -13,11 +13,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Vercel rewrites use panradhu nala, relative path (/api/...) pothum
     const endpoint = mode === 'login' ? '/api/users/login' : '/api/users/register';
     
     try {
-      // FIX: http://localhost:5000 ah remove panniyaachu. 
-      // Ippo it uses relative path, which works on both local and Vercel.
+      // FIX: Localhost URL-ah remove panniyaachu. Ippo idhu live-la correct-ah backend-ah reach pannum.
       const res = await axios.post(endpoint, form); 
       
       localStorage.setItem("user", JSON.stringify(res.data));
@@ -39,6 +39,7 @@ const Login = () => {
       }, 1500);
 
     } catch (err) {
+      console.error("Login Error:", err);
       setNotify({ 
         open: true, 
         msg: "Authentication failed. Check your credentials.", 
